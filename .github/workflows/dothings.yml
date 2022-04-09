@@ -1,0 +1,31 @@
+name: deploy:proxy
+on:
+  pull_request:
+jobs:
+  cancel-concurrent-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: cancel-runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+  do-something:
+    needs: cancel-concurrent-runs
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "do something"
+
+  deploy:
+    needs: do-something
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "do deploy"
+
+  other-deploy:
+    needs: do-something
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "do deploy"
